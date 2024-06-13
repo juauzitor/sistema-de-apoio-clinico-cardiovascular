@@ -34,7 +34,7 @@
 	            </configuration>
 	        </plugin>
 	    </plugins>
-	    <finalName>backend</finalName>
+	    <finalName>backend-sam</finalName>
 	</build>
 
   <dependencies>

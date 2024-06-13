@@ -8,6 +8,9 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
 
+import java.util.List;
+import java.util.ArrayList;
+
 @Singleton
 @Startup
 public class MqttService {
@@ -15,6 +18,7 @@ public class MqttService {
     private static final String BROKER = "tcp://localhost:1883";
     private static final String CLIENT_ID = "JavaClient";
     private MqttClient client;
+    private List<String> messages = new ArrayList<>();
 
     public MqttService() {
         try {
@@ -37,7 +41,11 @@ public class MqttService {
     }
 */
     public void subscribeInTopic(String topic) throws MqttException {
-        client.connect();
+        if (!client.isConnected()) {
+            MqttConnectOptions options = new MqttConnectOptions();
+            options.setCleanSession(true);
+            client.connect(options);
+        }
         client.subscribe(topic);
     }
 
@@ -54,4 +62,15 @@ public class MqttService {
         }
     }
 
+    public List<String> getMessages() {
+        synchronized (messages) {
+            return new ArrayList<>(messages);
+        }
+    }
+
+    public void clearMessages() {
+        synchronized (messages) {
+            messages.clear();
+        }
+    }
 }

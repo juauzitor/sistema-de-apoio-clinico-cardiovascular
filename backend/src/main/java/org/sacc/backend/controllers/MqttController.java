@@ -2,6 +2,7 @@ package org.sacc.backend.controllers;
 
 import jakarta.inject.Inject;
 import jakarta.json.Json;
+import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import jakarta.servlet.ServletException;
@@ -12,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.sacc.backend.models.Patient;
 import org.sacc.backend.services.MqttService;
 
@@ -44,11 +46,23 @@ public class MqttController extends HttpServlet {
 
         // Ajuste para verificar o caminho completo
         if (pathInfo == null || pathInfo.equals("/")) {
-            mqttService.publishMessage("ECG", "message");
-            resp.getWriter().println("{\"message\":\"MQTT\"}");
+            //mqttService.publishMessage("ECG", "message");
+            try {
+                mqttService.subscribeInTopic("ECG");
+                resp.getWriter().println("{\"message\":\"MQTT\"}");
+            } catch (MqttException e) {
+                throw new RuntimeException(e);
+            }
         } else if (pathInfo.equals("/status")) {
             resp.getWriter().println("{\"status\":\"MQTT Service is running\"}");
-        } else {
+        } else if (pathInfo.equals("/messages")) {
+        List<String> messages = mqttService.getMessages();
+        JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
+        for (String message : messages) {
+            jsonArrayBuilder.add(message);
+        }
+        resp.getWriter().println(jsonArrayBuilder.build().toString());
+    } else {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             resp.getWriter().println("{\"error\":\"Page not found\"}");
         }
