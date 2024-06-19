@@ -10,18 +10,12 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.core.Response;
 import org.eclipse.paho.client.mqttv3.MqttException;
-import org.sacc.backend.models.Patient;
 import org.sacc.backend.services.MqttService;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @WebServlet(name = "MqttController", urlPatterns = {"/mqtt", "/mqtt/*"})
 public class MqttController extends HttpServlet {
