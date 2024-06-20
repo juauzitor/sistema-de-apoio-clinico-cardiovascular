@@ -49,7 +49,8 @@ public class BatidaController extends HttpServlet {
                 for (Batida batida : batidas) {
                     JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder()
                             .add("value", batida.getValue())
-                            .add("status", batida.getStatus());
+                            .add("status", batida.getStatus())
+                            .add("expected", batida.getExpected());
                     jsonArrayBuilder.add(jsonObjectBuilder);
                 }
                 JsonObject jsonResponse = Json.createObjectBuilder()

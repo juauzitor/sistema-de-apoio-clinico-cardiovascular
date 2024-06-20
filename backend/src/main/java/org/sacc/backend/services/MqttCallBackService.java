@@ -37,18 +37,20 @@ public class MqttCallBackService implements MqttCallback {
         JsonObject json = jsonReader.readObject();
         double value = json.getJsonNumber("value").doubleValue();
         String status = json.getString("status");
-        insertData(value, status);
+        String expected = json.getString("expected");
+        insertData(value, status, expected);
     }
 
     public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
     }
 
-    private void insertData(Double value, String status) {
-        String query = "INSERT INTO batidas (value, status) VALUES (?, ?)";
+    private void insertData(Double value, String status, String expected) {
+        String query = "INSERT INTO batidas (value, status, expected) VALUES (?, ?, ?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setDouble(1, value);
             stmt.setString(2, status);
+            stmt.setString(3, expected);
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

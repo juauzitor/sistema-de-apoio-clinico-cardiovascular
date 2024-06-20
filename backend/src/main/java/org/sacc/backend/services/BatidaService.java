@@ -26,6 +26,7 @@ public class BatidaService {
                 Batida record = new Batida();
                 record.setValue(rs.getDouble("value"));
                 record.setStatus(rs.getString("status"));
+                record.setExpected(rs.getString("expected"));
                 records.add(record);
             }
         }
